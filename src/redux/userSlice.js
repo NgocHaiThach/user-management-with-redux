@@ -1,32 +1,38 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Fade } from "react-bootstrap";
+import { getUser } from "../uitls/callApi";
+
+export const fetchUsers = createAsyncThunk(
+    'users/fetchAllUsers', async () => {
+        const response = await getUser();
+        return response.data
+    }
+)
+
+
 
 const usersSlice = createSlice({
+
     name: 'users',
-    initialState:{
+    initialState: {
         listUser: [],
         isFetching: false,
-        error:false,
+        count: 0,
     },
     reducers: {
-        getListUserStart: (state) => {
-            state.isFetching= true;
-            state.error= false;
-        },
 
-        getListUserSuccess: (state, action) => {
-            state.isFetching= false;
-            state.listUser= action.payload;
-            state.error= false;
-        },
-
-        getListUserFailure: (state) => {
-            state.isFetching =false;
-            state.error= true;
-        }
-    }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchUsers.fulfilled, (state, action) => {
+                state.listUser = action.payload
+            })
+            .addCase(fetchUsers.rejected, (_, payload) => {
+                console.log(payload)
+            })
+    },
 })
 
-const {reducer, actions} = usersSlice;
-export const {getListUserStart, getListUserSuccess, getListUserFailure} = actions;
+const { reducer, actions } = usersSlice;
+export const { getListUserStart, getListUserSuccess, getListUserFailure } = actions;
 export default reducer;

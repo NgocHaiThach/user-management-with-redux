@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import TableData from '../../compnents/TableData/TableData';
+import { fetchUsers } from '../../redux/userSlice';
 import { getListUser } from '../../services/getListUser'
 
 export default function HomeManagement() {
@@ -17,11 +18,11 @@ export default function HomeManagement() {
     ]
 
     useEffect(() => {
-        getListUser(dispatch);
+        dispatch(fetchUsers());
     }, []);
 
-    const listUser = useSelector(state => state.user.listUser);
-
+    const { listUser, count } = useSelector(state => state.user);
+    console.log(listUser)
     return (
         <Container>
             <h3>User Mangement</h3>
