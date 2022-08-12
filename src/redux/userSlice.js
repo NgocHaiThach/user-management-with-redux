@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Fade } from "react-bootstrap";
-import { getUser } from "../uitls/callApi";
+import { getUser } from "../services/getListUser";
 
 export const fetchUsers = createAsyncThunk(
     'users/fetchAllUsers', async () => {
