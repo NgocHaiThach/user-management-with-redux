@@ -1,32 +1,38 @@
 import React from 'react'
+import { useState } from 'react';
 import { useEffect } from 'react'
 import { Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import TableData from '../../compnents/TableData/TableData';
+import Navbar from '../../components/Navbar/Navbar';
+import TableData from '../../components/TableData/TableData';
 import { fetchUsers } from '../../redux/userSlice';
-import { getListUser } from '../../services/getListUser'
 
 export default function HomeManagement() {
-    const dispatch = useDispatch();
+      const { listUser } = useSelector(state => state.user);
+      console.log(listUser);
+      const [searchForm, setSearchForm] = useState("");
+      const dispatch = useDispatch();
 
-    const titleData = [
-        { name: 'id', field: "User ID", sortable: 'none' },
-        { name: 'name', field: "User Name", sortable: 'none' },
-        { name: 'phone', field: "Phone Number", sortable: 'none' },
-        { name: 'email', field: "User Email", sortable: 'none' },
-        { name: 'type', field: "Role", sortable: 'none' },
-    ]
+      const filteredUser = listUser.filter((x) => Object.values(x).some(value => String(value).toLowerCase().includes(searchForm.toLowerCase())));
 
-    useEffect(() => {
-        dispatch(fetchUsers());
-    }, []);
+      const titleData = [
+            { name: 'id', field: "User ID", sortable: 'none' },
+            { name: 'name', field: "User Name", sortable: 'none' },
+            { name: 'phone', field: "Phone Number", sortable: 'none' },
+            { name: 'email', field: "User Email", sortable: 'none' },
+            { name: 'type', field: "Role", sortable: 'none' },
+      ]
 
-    const { listUser, count } = useSelector(state => state.user);
-    console.log(listUser)
-    return (
-        <Container>
-            <h3>User Mangement</h3>
-            <TableData listUser={listUser} titleData={titleData} />
-        </Container>
-    )
+
+      useEffect(() => {
+            dispatch(fetchUsers());
+      }, []);
+
+      return (
+            <Container style={{ paddingTop: "140px" }}>
+                  <Navbar setSearchForm={setSearchForm} searchForm={searchForm} />
+                  <h3>User Mangement</h3>
+                  <TableData listUser={searchForm ? filteredUser : listUser} titleData={titleData} />
+            </Container>
+      )
 }
