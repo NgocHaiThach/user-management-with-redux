@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Fade } from "react-bootstrap";
 import { getUser } from "../services/getListUser";
 
 export const fetchUsers = createAsyncThunk(
@@ -32,5 +31,4 @@ const usersSlice = createSlice({
 })
 
 const { reducer, actions } = usersSlice;
-export const { getListUserStart, getListUserSuccess, getListUserFailure } = actions;
 export default reducer;
