@@ -11,5 +11,12 @@ const userRequest = axios.create({
 	headers: ``,
 });
 
-export const getUser = () => publicRequest.get('/users');
+export const getUser = () =>
+	publicRequest.get('/users', {
+		params: {
+			sortBy: 'createdAt',
+			order: 'desc',
+		},
+	});
 export const deleteUser = id => publicRequest.delete(`/users/${id}`);
+export const addUser = data => publicRequest.post(`/users`, data);

@@ -1,10 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { deleteUser, getUser } from '../services/getListUser';
+import { addUser, deleteUser, getUser } from '../services/getListUser';
 
 export const fetchUsers = createAsyncThunk('users/fetchAllUsers', async () => {
 	const response = await getUser();
 	return response.data;
 });
+
+export const addUserThunk = createAsyncThunk(
+	'users/addUserThunk',
+	async data => {
+		const response = await addUser(data);
+		return response.data;
+	},
+);
 
 export const deleteUserThunk = createAsyncThunk(
 	'users/deleteUserThunk',
@@ -36,6 +44,13 @@ const usersSlice = createSlice({
 				console.log(payload);
 			})
 
+			.addCase(addUserThunk.fulfilled, (state, action) => {
+				state.listUser = state.listUser.splice(0, 0, action.payload);
+			})
+			.addCase(addUserThunk.rejected, (_, payload) => {
+				console.log(payload);
+			})
+
 			.addCase(deleteUserThunk.fulfilled, (state, action) => {
 				state.listUser = state.listUser.filter(
 					user => user.id !== action.payload,
@@ -47,6 +62,6 @@ const usersSlice = createSlice({
 	},
 });
 
-const { reducer, actions } = usersSlice;
+const { reducer } = usersSlice;
 
 export default reducer;
