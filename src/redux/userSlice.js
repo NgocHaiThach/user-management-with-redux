@@ -1,22 +1,35 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addUser, deleteUser, getOneUser, getUser } from '../services/getListUser';
+import {
+	addUser,
+	deleteUser,
+	getOneUser,
+	getUser,
+	updateUser,
+} from '../services/getListUser';
 
 export const fetchUsers = createAsyncThunk('users/fetchAllUsers', async () => {
 	const response = await getUser();
 	return response.data;
 });
 
-export const fetchOneUser = createAsyncThunk(
-	'users/fetchOneUser',
-	async (id) => {
-		const response = await getOneUser(id);
-		return response.data;
-	});
+export const fetchOneUser = createAsyncThunk('users/fetchOneUser', async id => {
+	const response = await getOneUser(id);
+	return response.data;
+});
 
 export const addUserThunk = createAsyncThunk(
 	'users/addUserThunk',
 	async data => {
 		const response = await addUser(data);
+		return response.data;
+	},
+);
+
+export const updateUserThunk = createAsyncThunk(
+	'users/updateUserThunk',
+	async data => {
+		// console.log(data);
+		const response = await updateUser(data);
 		return response.data;
 	},
 );
@@ -33,7 +46,7 @@ const usersSlice = createSlice({
 	name: 'users',
 	initialState: {
 		listUser: [],
-		oneuser: {},
+		oneuser: null,
 		isFetching: false,
 	},
 	reducers: {
@@ -66,6 +79,18 @@ const usersSlice = createSlice({
 				state.listUser = state.listUser.splice(0, 0, action.payload);
 			})
 			.addCase(addUserThunk.rejected, (_, payload) => {
+				console.log(payload);
+			})
+			// update user
+			.addCase(updateUserThunk.fulfilled, (state, action) => {
+				const index = state.listUser.findIndex(
+					user => user.id === action.payload.id,
+				);
+				if (index !== -1) {
+					state.listUser[index] = action.payload;
+				}
+			})
+			.addCase(updateUserThunk.rejected, (_, payload) => {
 				console.log(payload);
 			})
 
