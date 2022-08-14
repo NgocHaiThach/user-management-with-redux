@@ -48,10 +48,6 @@ const Form = ({ data }) => {
 		}
 	}, [location, id]);
 
-	// console.log("first", oneuser)
-	// setName(oneuser?.name);
-
-
 	const onSubmit = async () => {
 		const newUser = {
 			// id: nanoid(),
