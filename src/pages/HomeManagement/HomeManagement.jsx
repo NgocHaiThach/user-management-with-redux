@@ -3,10 +3,10 @@ import { Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Navbar from '../../components/Navbar/Navbar';
 import TableData from '../../components/TableData/TableData';
-import { fetchUsers } from '../../redux/userSlice';
+import { fetchOneUser, fetchUsers } from '../../redux/userSlice';
 
 export default function HomeManagement() {
-	const { listUser } = useSelector(state => state.user);
+	const { listUser, oneuser } = useSelector(state => state.user);
 	const [searchForm, setSearchForm] = useState('');
 	const dispatch = useDispatch();
 
