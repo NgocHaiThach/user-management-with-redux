@@ -2,17 +2,20 @@ import { HomeOutlined } from '@ant-design/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { addUserThunk } from '../../redux/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { addUserThunk, fetchOneUser } from '../../redux/userSlice';
 import { schema } from '../../yupGlobal';
 import './form.css';
 
-const Form = () => {
+const Form = ({ data }) => {
 	const [isEdit, setEdit] = useState(false);
+	const { id } = useParams();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
+
+	const { oneuser } = useSelector(state => state.user);
 
 	// Input state
 	const [name, setName] = useState('');
@@ -20,6 +23,7 @@ const Form = () => {
 	const [email, setEmail] = useState('');
 	const [phone, setPhone] = useState(null);
 	const [type, setType] = useState(0);
+
 	const {
 		register,
 		handleSubmit,
@@ -31,14 +35,22 @@ const Form = () => {
 
 	useEffect(() => {
 		const pathname = location.pathname.split('/')[1];
+		// console.log('location', pathname)
 		if (pathname === 'edit') {
 			setEdit(true);
 			// Set state input in here
+			// dispatch(fetchOneUser(id));
+
 		} else {
 			setEdit(false);
+			console.log("add")
 			// Set state input in here
 		}
-	}, [location]);
+	}, [location, id]);
+
+	// console.log("first", oneuser)
+	// setName(oneuser?.name);
+
 
 	const onSubmit = async () => {
 		const newUser = {
@@ -81,6 +93,7 @@ const Form = () => {
 							{...register('name')}
 							type='text'
 							placeholder='Name'
+							value={name}
 							autoFocus
 							onChange={e => setName(e.target.value)}
 						/>
@@ -90,6 +103,7 @@ const Form = () => {
 						<input
 							{...register('userName')}
 							type='text'
+							value={userName}
 							placeholder='Username'
 							onChange={e => setUserName(e.target.value)}
 						/>
@@ -99,6 +113,7 @@ const Form = () => {
 						<input
 							{...register('email')}
 							type='email'
+							value={email}
 							placeholder='Email'
 							onChange={e => setEmail(e.target.value)}
 						/>
