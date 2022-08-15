@@ -22,3 +22,4 @@ export const getUser = () =>
 export const deleteUser = id => publicRequest.delete(`/users/${id}`);
 export const addUser = data => publicRequest.post(`/users`, data);
 export const getOneUser = id => publicRequest.get(`/users/${id}`);
+export const updateUser = data => publicRequest.put(`/users/${data.id}`, data);

@@ -19,9 +19,10 @@ export default function TableData({ listUser, titleData }) {
                         <tr>
                               <td>{user.id}</td>
                               <td>{user.name}</td>
+                              <td>{user.userName}</td>
                               <td>{user.phone}</td>
                               <td>{user.email}</td>
-                              <td>{user.type ? 'Admin' : 'User'}</td>
+                              <td>{user.type ? 'VIP' : 'User'}</td>
                               <td className='col-lg-3'>
                                     <Button
                                           variant='success'
