@@ -18,7 +18,8 @@ export default function HomeManagement() {
 
 	const titleData = [
 		{ name: 'id', field: 'User ID', sortable: 'none' },
-		{ name: 'name', field: 'User Name', sortable: 'none' },
+		{ name: 'name', field: 'Name', sortable: 'none' },
+		{ name: 'userName', field: 'User Name', sortable: 'none' },
 		{ name: 'phone', field: 'Phone Number', sortable: 'none' },
 		{ name: 'email', field: 'User Email', sortable: 'none' },
 		{ name: 'type', field: 'Role', sortable: 'none' },

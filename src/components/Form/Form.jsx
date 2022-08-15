@@ -4,11 +4,15 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { addUserThunk, fetchOneUser } from '../../redux/userSlice';
+import { addUserThunk, fetchOneUser, updateUserThunk } from '../../redux/userSlice';
+import { getOneUser } from '../../services/apiUsers';
 import { schema } from '../../yupGlobal';
 import './form.css';
 
-const Form = ({ data }) => {
+
+
+
+const Form = () => {
 	const [isEdit, setEdit] = useState(false);
 	const { id } = useParams();
 	const dispatch = useDispatch();
@@ -17,11 +21,12 @@ const Form = ({ data }) => {
 
 	const { oneuser } = useSelector(state => state.user);
 
+
 	// Input state
 	const [name, setName] = useState('');
 	const [userName, setUserName] = useState('');
 	const [email, setEmail] = useState('');
-	const [phone, setPhone] = useState(null);
+	const [phone, setPhone] = useState(0);
 	const [type, setType] = useState(0);
 
 	const {
@@ -35,20 +40,29 @@ const Form = ({ data }) => {
 
 	useEffect(() => {
 		const pathname = location.pathname.split('/')[1];
-		// console.log('location', pathname)
 		if (pathname === 'edit') {
 			setEdit(true);
 			// Set state input in here
-			// dispatch(fetchOneUser(id));
-
+			dispatch(fetchOneUser(id));
 		} else {
 			setEdit(false);
-			console.log("add")
 			// Set state input in here
 		}
-	}, [location, id]);
+	}, [dispatch, location, id]);
+
+	useEffect(() => {
+		const pathname = location.pathname.split('/')[1];
+		if (oneuser && pathname === 'edit') {
+			setName(oneuser?.name);
+			setUserName(oneuser?.userName);
+			setEmail(oneuser?.email);
+			setPhone(oneuser?.phone);
+			setType(oneuser?.type === true ? 1 : 0);
+		}
+	}, [dispatch, oneuser]);
 
 	const onSubmit = async () => {
+		const pathname = location.pathname.split('/')[1];
 		const newUser = {
 			// id: nanoid(),
 			name,
@@ -58,24 +72,46 @@ const Form = ({ data }) => {
 			type: type === 0 ? false : true,
 		};
 
-		try {
-			await dispatch(addUserThunk(newUser)).unwrap();
-			reset({
-				name: '',
-				userName: '',
-				email: '',
-				phone: null,
-				type: 0,
-			});
-			navigate('/', { replace: true });
-		} catch (err) {
-			console.log('Error on add form');
+		if (pathname === 'edit') {
+
+			const updateUserValue = {
+				...oneuser,
+				name,
+				userName,
+				email,
+				phone,
+				type: type === 0 ? false : true
+			}
+
+			try {
+				await dispatch(updateUserThunk(updateUserValue)).unwrap();
+				navigate('/', { replace: true })
+			}
+			catch (err) {
+				console.log('Error update form')
+			}
+		}
+		else {
+			try {
+				await dispatch(addUserThunk(newUser)).unwrap();
+				reset({
+					name: '',
+					userName: '',
+					email: '',
+					phone: null,
+					type: 0,
+				});
+				navigate('/', { replace: true });
+			} catch (err) {
+				console.log('Error on add form');
+			}
 		}
 	};
 
 	const handleChangeType = e => {
 		setType(e.target.value);
 	};
+
 	return (
 		<div className='form'>
 			<div className='form__container'>
@@ -108,8 +144,8 @@ const Form = ({ data }) => {
 					<div className='form__item'>
 						<input
 							{...register('email')}
-							type='email'
 							value={email}
+							type='email'
 							placeholder='Email'
 							onChange={e => setEmail(e.target.value)}
 						/>
@@ -118,9 +154,10 @@ const Form = ({ data }) => {
 					<div className='form__item'>
 						<input
 							{...register('phone')}
+							value={phone}
 							type='number'
 							placeholder='Phone number'
-							onChange={e => setPhone(e.target.value)}
+							onChange={e => setPhone(+e.target.value)}
 						/>
 						<span>{errors.phone?.message}</span>
 					</div>

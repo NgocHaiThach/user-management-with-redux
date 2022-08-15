@@ -12,7 +12,7 @@ export const schema = yup
 		email: yup
 			.string()
 			.email()
-			.required('Trường này bắt buộc, vui lòng nhập'),
+			// .required('Trường này bắt buộc, vui lòng nhập'),
 		// role: yup.string().required("Trường này bắt buộc, vui lòng nhập"),
 	})
 	.required();
