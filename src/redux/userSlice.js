@@ -4,7 +4,6 @@ import {
 	deleteUser,
 	getOneUser,
 	getUser,
-	updateUser,
 } from '../services/getListUser';
 
 export const fetchUsers = createAsyncThunk('users/fetchAllUsers', async () => {
@@ -21,15 +20,6 @@ export const addUserThunk = createAsyncThunk(
 	'users/addUserThunk',
 	async data => {
 		const response = await addUser(data);
-		return response.data;
-	},
-);
-
-export const updateUserThunk = createAsyncThunk(
-	'users/updateUserThunk',
-	async data => {
-		// console.log(data);
-		const response = await updateUser(data);
 		return response.data;
 	},
 );
@@ -69,6 +59,7 @@ const usersSlice = createSlice({
 			//fetch one user
 			.addCase(fetchOneUser.fulfilled, (state, action) => {
 				state.oneuser = action.payload;
+				state.isFetching = false;
 			})
 			.addCase(fetchOneUser.rejected, (_, payload) => {
 				console(payload);
@@ -79,18 +70,6 @@ const usersSlice = createSlice({
 				state.listUser = state.listUser.splice(0, 0, action.payload);
 			})
 			.addCase(addUserThunk.rejected, (_, payload) => {
-				console.log(payload);
-			})
-			// update user
-			.addCase(updateUserThunk.fulfilled, (state, action) => {
-				const index = state.listUser.findIndex(
-					user => user.id === action.payload.id,
-				);
-				if (index !== -1) {
-					state.listUser[index] = action.payload;
-				}
-			})
-			.addCase(updateUserThunk.rejected, (_, payload) => {
 				console.log(payload);
 			})
 
