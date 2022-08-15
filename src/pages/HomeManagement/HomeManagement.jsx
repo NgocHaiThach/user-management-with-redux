@@ -10,7 +10,7 @@ export default function HomeManagement() {
       const [searchForm, setSearchForm] = useState('');
       const dispatch = useDispatch();
 
-      // const filteredUser = listUser.filter(item => Object.values(item).some(value => String(value).toLowerCase().includes(searchForm.toLowerCase())));
+      const filteredUser = listUser.filter(item => Object.values(item).some(value => String(value).toLowerCase().includes(searchForm.toLowerCase())));
 
       const titleData = [
             { name: 'id', field: 'User ID', sortable: 'none' },
@@ -31,8 +31,7 @@ export default function HomeManagement() {
                   <Navbar setSearchForm={setSearchForm} searchForm={searchForm} />
                   <h3>User Mangement</h3>
                   <TableData
-                        // listUser={searchForm ? filteredUser : listUser}
-                        listUser={listUser}
+                        listUser={searchForm ? filteredUser : listUser}
                         titleData={titleData}
                   />
             </Container>
