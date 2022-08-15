@@ -41,7 +41,7 @@ const usersSlice = createSlice({
 	name: 'users',
 	initialState: {
 		listUser: [],
-		oneuser: null,
+		oneuser: {},
 		isFetching: false,
 	},
 	reducers: {
@@ -55,21 +55,24 @@ const usersSlice = createSlice({
 		builder
 			//fetch list users
 			.addCase(fetchUsers.fulfilled, (state, action) => {
-				state.listUser = action.payload;
+				state.listUser = action.payload.items
 			})
 			.addCase(fetchUsers.rejected, (_, payload) => {
 				console.log(payload);
 			})
 
 			//fetch one user
+                  .addCase(fetchOneUser.pending, (state, action) => {
+				state.isFetching = true;
+			})
 			.addCase(fetchOneUser.fulfilled, (state, action) => {
 				state.oneuser = action.payload;
 				state.isFetching = false;
 			})
 			.addCase(fetchOneUser.rejected, (_, payload) => {
-				console(payload);
+				console.log(payload);
 			})
-
+                  
 			// add user
 			.addCase(addUserThunk.fulfilled, (state, action) => {
 				state.listUser = state.listUser.splice(0, 0, action.payload);
