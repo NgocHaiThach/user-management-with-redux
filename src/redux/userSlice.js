@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { updateUser } from 'src/services/apiUsers';
 import {
 	addUser,
 	deleteUser,
 	getOneUser,
 	getUser,
-} from '../services/getListUser';
+	updateUser,
+} from '../services/apiUsers';
 
 export const fetchUsers = createAsyncThunk('users/fetchAllUsers', async () => {
 	const response = await getUser();
@@ -46,6 +46,7 @@ const usersSlice = createSlice({
 	initialState: {
 		listUser: [],
 		oneuser: null,
+		count: null,
 		isFetching: false,
 	},
 	reducers: {
@@ -59,7 +60,9 @@ const usersSlice = createSlice({
 		builder
 			//fetch list users
 			.addCase(fetchUsers.fulfilled, (state, action) => {
-				state.listUser = action.payload;
+				const { items, count } = action.payload;
+				state.listUser = items;
+				state.count = count;
 			})
 			.addCase(fetchUsers.rejected, (_, payload) => {
 				console.log(payload);

@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Navbar from '../../components/Navbar/Navbar';
 import TableData from '../../components/TableData/TableData';
-import { fetchOneUser, fetchUsers } from '../../redux/userSlice';
+import { fetchUsers } from '../../redux/userSlice';
 
 export default function HomeManagement() {
 	const { listUser, oneuser } = useSelector(state => state.user);
@@ -11,9 +11,13 @@ export default function HomeManagement() {
 	const dispatch = useDispatch();
 
 	const filteredUser = listUser.filter(x =>
-		Object.values(x).some(value =>
-			String(value).toLowerCase().includes(searchForm.toLowerCase()),
-		),
+		Object.values(x).some(value => {
+			console.log(value);
+			return value
+				.toString()
+				.toLowerCase()
+				.includes(searchForm.toLowerCase());
+		}),
 	);
 
 	const titleData = [
