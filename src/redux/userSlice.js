@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { updateUser } from 'src/services/apiUsers';
 import {
 	addUser,
 	deleteUser,
@@ -20,6 +21,14 @@ export const addUserThunk = createAsyncThunk(
 	'users/addUserThunk',
 	async data => {
 		const response = await addUser(data);
+		return response.data;
+	},
+);
+
+export const updateUserThunk = createAsyncThunk(
+	'users/updateUserThunk',
+	async data => {
+		const response = await updateUser(data);
 		return response.data;
 	},
 );
@@ -70,6 +79,19 @@ const usersSlice = createSlice({
 				state.listUser = state.listUser.splice(0, 0, action.payload);
 			})
 			.addCase(addUserThunk.rejected, (_, payload) => {
+				console.log(payload);
+			})
+
+			// update user
+			.addCase(updateUserThunk.fulfilled, (state, action) => {
+				const index = state.listUser.findIndex(
+					user => user.id === action.payload.id,
+				);
+				if (index !== -1) {
+					state.listUser[index] = action.payload;
+				}
+			})
+			.addCase(updateUserThunk.rejected, (_, payload) => {
 				console.log(payload);
 			})
 
