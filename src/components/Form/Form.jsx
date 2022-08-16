@@ -11,6 +11,7 @@ const initialState = {
 }
 
 const Form = () => {
+
       const { oneuser, isFetching } = useSelector(state => state.user);
       const [form, setForm] = useState(initialState);
       const [isEdit, setIsEdit] = useState(false);
@@ -20,6 +21,7 @@ const Form = () => {
       const pathname = location.pathname.split('/')[1];
       const { id } = useParams();
       console.log(oneuser, form);
+
 
       const handleChange = (e) => {
             const name = e.target.name;
@@ -46,6 +48,13 @@ const Form = () => {
                   setIsEdit(false)
             }
       }, [dispatch, id, pathname]);
+
+      // // Input state
+      // const [name, setName] = useState('');
+      // const [userName, setUserName] = useState('');
+      // const [email, setEmail] = useState('');
+      // const [phone, setPhone] = useState('');
+      // const [type, setType] = useState(0);
 
       const onSubmit = (e) => {
             e.preventDefault();
