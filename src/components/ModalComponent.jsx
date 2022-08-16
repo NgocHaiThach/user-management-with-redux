@@ -11,6 +11,7 @@ export default function ModalComponent({
 	show,
 	handleClose,
 }) {
+	console.log(show)
 	const dispatch = useDispatch();
 	const handleDelete = () => {
 		dispatch(deleteUserThunk(idUser));

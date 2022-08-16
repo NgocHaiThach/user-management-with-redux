@@ -18,6 +18,15 @@ export const getUser = () =>
 			order: 'desc',
 		},
 	});
+
+export const getUserPagination = ({limit=5, page=1}) =>
+	publicRequest.get(`/users?page=${page}&limit=${limit}`, {
+		params: {
+			sortBy: 'createdAt',
+			order: 'desc',
+		},
+	});
+
 	
 export const deleteUser = id => publicRequest.delete(`/users/${id}`);
 export const addUser = data => publicRequest.post(`/users`, data);
