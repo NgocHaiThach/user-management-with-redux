@@ -1,8 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addUser, deleteUser, getOneUser, getUser, updateUser } from '../services/apiUsers';
+import { addUser, deleteUser, getOneUser, getUser, getUserPagination, updateUser } from '../services/apiUsers';
 
 export const fetchUsers = createAsyncThunk('users/fetchAllUsers', async () => {
 	const response = await getUser();
+	return response.data;
+});
+
+export const fetchUsersPagination = createAsyncThunk('users/fetchUsersPagination', async ({ limit, page }) => {
+	console.log({ limit, page })
+	const response = await getUserPagination({ limit, page });
 	return response.data;
 });
 
@@ -36,12 +42,30 @@ export const deleteUserThunk = createAsyncThunk(
 		return id;
 	},
 );
+export const deleteMultipleUserThunk = createAsyncThunk(
+	'users/deleteMultipleUserThunk',
+	async arrayId => {
+		const promises = await arrayId.map(async id => {
+			await deleteUser(id);
+	// 		  const promise = new Promise((resolve, reject) => {
+    //   setTimeout(() => resolve(deleteUser(id)), 500)
+    // });
+	// 		return promise;
+		})
+		// const res = await Promise.all(promises);
+		console.log(promises)
+	
+		// console.log(arrayId)
+	},
+
+);
 
 const usersSlice = createSlice({
 	name: 'users',
 	initialState: {
 		listUser: [],
 		oneuser: null,
+		count: 0,
 		isFetching: false,
 	},
 	reducers: {
@@ -55,9 +79,20 @@ const usersSlice = createSlice({
 		builder
 			//fetch list users
 			.addCase(fetchUsers.fulfilled, (state, action) => {
-				state.listUser = action.payload;
+				const { items } = action.payload
+				state.listUser = items;
 			})
 			.addCase(fetchUsers.rejected, (_, payload) => {
+				console.log(payload);
+			})
+
+			//fetch list users pagination
+			.addCase(fetchUsersPagination.fulfilled, (state, action) => {
+				const { items, count } = action.payload
+				state.listUser = items;
+				state.count = count;
+			})
+			.addCase(fetchUsersPagination.rejected, (_, payload) => {
 				console.log(payload);
 			})
 
@@ -98,6 +133,13 @@ const usersSlice = createSlice({
 				);
 			})
 			.addCase(deleteUserThunk.rejected, (_, payload) => {
+				console.log(payload);
+			})
+			//delete pagination user
+			.addCase(deleteMultipleUserThunk.fulfilled, (state, action) => {
+				// console.log(action.payload)
+			})
+			.addCase(deleteMultipleUserThunk.rejected, (_, payload) => {
 				console.log(payload);
 			});
 	},

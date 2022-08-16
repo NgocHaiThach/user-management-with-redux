@@ -18,6 +18,7 @@ const Form = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
+	const pathname = location.pathname.split('/')[1];
 
 	const { oneuser } = useSelector(state => state.user);
 
@@ -26,7 +27,7 @@ const Form = () => {
 	const [name, setName] = useState('');
 	const [userName, setUserName] = useState('');
 	const [email, setEmail] = useState('');
-	const [phone, setPhone] = useState(0);
+	const [phone, setPhone] = useState('');
 	const [type, setType] = useState(0);
 
 	const {
@@ -39,7 +40,6 @@ const Form = () => {
 	});
 
 	useEffect(() => {
-		const pathname = location.pathname.split('/')[1];
 		if (pathname === 'edit') {
 			setEdit(true);
 			// Set state input in here
@@ -51,7 +51,6 @@ const Form = () => {
 	}, [dispatch, location, id]);
 
 	useEffect(() => {
-		const pathname = location.pathname.split('/')[1];
 		if (oneuser && pathname === 'edit') {
 			setName(oneuser?.name);
 			setUserName(oneuser?.userName);
@@ -61,17 +60,7 @@ const Form = () => {
 		}
 	}, [dispatch, oneuser]);
 
-	const onSubmit = async () => {
-		const pathname = location.pathname.split('/')[1];
-		const newUser = {
-			// id: nanoid(),
-			name,
-			userName,
-			email,
-			phone,
-			type: type === 0 ? false : true,
-		};
-
+	const onSubmit = async (data) => {
 		if (pathname === 'edit') {
 
 			const updateUserValue = {
@@ -86,6 +75,7 @@ const Form = () => {
 			try {
 				await dispatch(updateUserThunk(updateUserValue)).unwrap();
 				navigate('/', { replace: true })
+				console.log(data)
 			}
 			catch (err) {
 				console.log('Error update form')
@@ -93,14 +83,8 @@ const Form = () => {
 		}
 		else {
 			try {
-				await dispatch(addUserThunk(newUser)).unwrap();
-				reset({
-					name: '',
-					userName: '',
-					email: '',
-					phone: null,
-					type: 0,
-				});
+				await dispatch(addUserThunk(data)).unwrap();
+				console.log(data)
 				navigate('/', { replace: true });
 			} catch (err) {
 				console.log('Error on add form');
@@ -155,9 +139,9 @@ const Form = () => {
 						<input
 							{...register('phone')}
 							value={phone}
-							type='number'
+							type='text'
 							placeholder='Phone number'
-							onChange={e => setPhone(+e.target.value)}
+							onChange={e => setPhone(e.target.value)}
 						/>
 						<span>{errors.phone?.message}</span>
 					</div>
